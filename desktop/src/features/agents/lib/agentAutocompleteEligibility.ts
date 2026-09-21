@@ -55,11 +55,15 @@ export function getMentionableAgentPubkeys({
 }
 
 export function isAgentIdentityInManagedList(
-  candidate: { isAgent?: boolean; pubkey: string },
+  candidate: { isAgent?: boolean; isMember?: boolean; pubkey: string },
   managedAgentPubkeys: ReadonlySet<string>,
 ) {
+  // Channel membership is sufficient for a relay-owned agent. Managed agents
+  // are local Desktop records; excluding member agents here made VPS-only
+  // agents impossible to mention after removing their local spawn record.
   return (
     candidate.isAgent !== true ||
+    candidate.isMember === true ||
     managedAgentPubkeys.has(normalizePubkey(candidate.pubkey))
   );
 }
