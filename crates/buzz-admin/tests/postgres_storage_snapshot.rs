@@ -171,7 +171,11 @@ async fn run_worker(database_url: &str, proxy: &Server, s3: &Server) -> WorkerOu
     // The proxy deliberately interrupts the PostgreSQL handshake. Keep TLS
     // out of this local transport test so it exercises sqlx::Error::Io.
     url.query_pairs_mut().append_pair("sslmode", "disable");
-    let mut child = Command::new(env!("CARGO_BIN_EXE_buzz-admin"))
+    // nextest relocates executables when extracting a test archive. Keep the
+    // compile-time Cargo path only as the fallback for local cargo test runs.
+    let worker_binary = std::env::var_os("NEXTEST_BIN_EXE_buzz_admin")
+        .unwrap_or_else(|| env!("CARGO_BIN_EXE_buzz-admin").into());
+    let mut child = Command::new(worker_binary)
         .args(["storage-snapshot", "--max-objects", "100"])
         .env_clear()
         .env("DATABASE_URL", url.as_str())
