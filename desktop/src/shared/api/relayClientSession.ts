@@ -88,6 +88,7 @@ export class RelayClient {
   private eventBuffer: SubscriptionEventBufferItem[] = [];
   private flushTimeout: number | null = null;
   private reconnectListeners = new Set<() => void>();
+  private channelAccessRevokedListeners = new Set<() => void>();
   private hasConnectedOnce = false;
   private notifyReconnectListeners = false;
   private onMessageChannel: Channel<unknown> | null = null;
@@ -169,6 +170,7 @@ export class RelayClient {
     }
     this.eventBuffer = [];
     this.reconnectListeners.clear();
+    this.channelAccessRevokedListeners.clear();
     this.connectionStateEmitter.clear();
     this.onMessageChannel = null;
     this.reconnectDelayMs = RECONNECT_BASE_DELAY_MS;
@@ -452,6 +454,14 @@ export class RelayClient {
     this.reconnectListeners.add(listener);
     return () => {
       this.reconnectListeners.delete(listener);
+    };
+  }
+
+  /** Listen for channel access-revocation hints; authoritative state needs a refresh. */
+  subscribeToChannelAccessRevocations(listener: () => void) {
+    this.channelAccessRevokedListeners.add(listener);
+    return () => {
+      this.channelAccessRevokedListeners.delete(listener);
     };
   }
 
@@ -789,6 +799,11 @@ export class RelayClient {
       return;
     }
     if (type === "CLOSED" && typeof rest[0] === "string") {
+      const subscription = this.subscriptions.get(rest[0]);
+      const accessRevoked =
+        subscription?.mode === "live" &&
+        (subscription.filter["#h"]?.length ?? 0) > 0 &&
+        rest[1] === "restricted: channel access revoked";
       handleRelayClosed({
         subscriptions: this.subscriptions,
         subId: rest[0],
@@ -800,6 +815,10 @@ export class RelayClient {
           ),
         closeSubscription: (subId) => this.closeSubscription(subId),
       });
+      // CLOSED ends the subscription, but cannot establish archive/membership state.
+      if (accessRevoked) {
+        for (const listener of this.channelAccessRevokedListeners) listener();
+      }
       return;
     }
 
