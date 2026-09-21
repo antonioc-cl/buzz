@@ -1,0 +1,25 @@
+desktop/src/features/agents/lib/agentAutocompleteEligibility.test.mjs
+  s_c6ec7e7a7ee232::t_c1ab95cc8cbe23 139,163-169
+desktop/src/features/agents/lib/agentAutocompleteEligibility.ts
+  s_c6ec7e7a7ee232::t_cd2fbc9d8ea326 58,61-63,66
+scripts/publish-relay-agent-profile-vps.sh
+  s_c6ec7e7a7ee232::t_29fc41e54d2f15 1-21
+scripts/publish-relay-agent-profile.mjs
+  s_c6ec7e7a7ee232::t_09575d4c9be384 1-117
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "dc93875ac63843b77b4653400fa91c4bf6fd0855",
+  "prompts": {},
+  "sessions": {
+    "s_c6ec7e7a7ee232": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "32054638-32ad-4161-900f-0395866f00b3",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": "Antonio Correa <antonio.correa@gmail.com>"
+    }
+  }
+}
