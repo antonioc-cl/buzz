@@ -1,0 +1,23 @@
+scripts/create-remote-agent-vps.sh
+  s_30110981bfc638::t_6626a0f411e4d3 1-26
+scripts/create-remote-agent.mjs
+  s_30110981bfc638::t_0f82faa835c9d7 1-367
+scripts/create-remote-agent.test.mjs
+  s_30110981bfc638::t_f239e041e81632 1-148
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "cca87eb0c5aa4eeed62d99c4db2db12bd3640c0b",
+  "prompts": {},
+  "sessions": {
+    "s_30110981bfc638": {
+      "agent_id": {
+        "tool": "pi",
+        "id": "01a0c4d6-9d86-75d5-9f92-297652df4734",
+        "model": "grok-4.6"
+      },
+      "human_author": "Antonio Correa <antonio.correa@gmail.com>"
+    }
+  }
+}
